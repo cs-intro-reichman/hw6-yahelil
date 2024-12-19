@@ -36,7 +36,6 @@ public class Runigram {
 		in.readInt();
 		// Creates the image array
 		Color[][] image = new Color[numRows][numCols];
-		// Reads the RGB values from the file into the image array. 
 		for (int i = 0; i < numRows; i++) {
 			for (int j = 0; j < numCols; j++) {
 				int red = in.readInt();
@@ -63,8 +62,13 @@ public class Runigram {
 	// For example, to check that some image processing function works correctly,
 	// we can apply the function and then use this function to print the resulting image.
 	private static void print(Color[][] image) {
-		//// Replace this comment with your code
-		//// Notice that all you have to so is print every element (i,j) of the array using the print(Color) function.
+		int rows = image.length;
+		int cols = image[0].length;
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				print(image[i][j]);
+			}
+		}
 	}
 	
 	/**
@@ -75,7 +79,6 @@ public class Runigram {
 		int cols = image[0].length;
 		Color[][] flippedImage = new Color[rows][cols];
 
-		// Reverse the rows
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
 				flippedImage[i][j] = image[i][cols - j - 1];
@@ -92,7 +95,6 @@ public class Runigram {
 		int cols = image[0].length;
 		Color[][] flippedImage = new Color[rows][cols];
 
-		// Reverse the rows
 		for (int i = 0; i < rows; i++) {
 			flippedImage[i] = image[rows - i - 1];
 		}
@@ -114,13 +116,14 @@ public class Runigram {
 	 * Returns an image which is the grayscaled version of the given image.
 	 */
 	public static Color[][] grayScaled(Color[][] image) {
-		Color[][] grey_image = image;
+		Color[][] grey_image = new Color[image.length][image[0].length];
+    
 		int image_row = image.length;
 		int image_col = image[0].length;
 
-		for(int i = 0; i < image_row; i++){
-			for(int j = 0; j < image_col; j++){
-				grey_image[i][j] = luminance(grey_image[i][j]);
+		for (int i = 0; i < image_row; i++) {
+			for (int j = 0; j < image_col; j++) {
+				grey_image[i][j] = luminance(image[i][j]);
 			}
 		}
 		return grey_image;
@@ -137,15 +140,12 @@ public class Runigram {
 		
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
-				// Calculate the corresponding position in the original image
 				int sourceRow = (int) (i * rowScale);
 				int sourceCol = (int) (j * colScale);
-				
-				// Ensure we don't exceed the bounds of the source image
+
 				sourceRow = Math.min(sourceRow, image.length - 1);
 				sourceCol = Math.min(sourceCol, image[0].length - 1);
-				
-				// Copy the color from the source to the scaled image
+
 				scaledImage[i][j] = image[sourceRow][sourceCol];
 			}
 		}
@@ -208,24 +208,19 @@ public class Runigram {
 		int cols = source[0].length;
 		
 		// Scale target image if dimensions don't match
-		Color[][] scaledTarget = target;
+		Color[][] scaledTarget = new Color[rows][cols];
 		if (rows != target.length || cols != target[0].length) {
 			scaledTarget = scaled(target, cols, rows);
 		}
 		
-		// For each step i, blend with alpha = (n-i)/n
-		for (int i = 0; i <= n; i++) {  // Note: <= n to include the final state
-			// Calculate alpha for this step
+		for (int i = 0; i <= n; i++) { 
 			double alpha = (double)(n - i) / n;
 			
-			// Blend the images with current alpha
 			Color[][] morphedImage = blend(source, scaledTarget, alpha);
-			
-			// Display the current morphed state
+
 			Runigram.display(morphedImage);
-			
-			// Pause to show the animation
-			StdDraw.pause(500);  // 500 milliseconds as specified
+
+			StdDraw.pause(150);
 		}
 	}
 	
